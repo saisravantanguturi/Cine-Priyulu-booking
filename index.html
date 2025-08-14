@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cine Priyulu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+             colors: {
+              gray: {
+                950: '#030712'
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+      }
+      .animated-gradient-text {
+        background-size: 200% auto;
+        transition: background-position 0.6s ease-in-out;
+      }
+      .animated-gradient-text:hover {
+        background-position: right center;
+      }
+
+      .movie-card {
+        transition: all 0.35s ease-in-out;
+      }
+      .movie-card:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1), 0 0 25px -5px var(--theme-color-glow);
+      }
+      .dark .movie-card:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2), 0 0 35px -5px var(--theme-color-glow);
+      }
+
+
+      .interactive-button {
+        transition: all 0.2s ease-in-out;
+      }
+      .interactive-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+      }
+      
+      /* For dynamic price pulse */
+      @keyframes pulse-price {
+        0%, 100% {
+          transform: scale(1);
+          text-shadow: 0 0 5px var(--theme-color-glow, #06b6d4);
+        }
+        50% {
+          transform: scale(1.03);
+          text-shadow: 0 0 15px var(--theme-color-glow, #06b6d4);
+        }
+      }
+      .animate-price-pulse {
+        --theme-color-glow: rgba(34, 211, 238, 0.7);
+        animation: pulse-price 2.5s infinite ease-in-out;
+      }
+      .dark .animate-price-pulse {
+         --theme-color-glow: rgba(34, 211, 238, 0.5);
+      }
+
+      /* Styles for mobile view simulation */
+      .view-mode-container.view-mobile {
+        max-width: 420px;
+        height: 844px; /* iPhone 14 Pro height */
+        margin: 2rem auto;
+        border-radius: 40px;
+        border: 12px solid #1f2937; /* gray-800 */
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 15px rgba(0,0,0,0.2);
+        overflow: hidden;
+        position: relative;
+        transition: all 0.4s ease-in-out;
+        transform: translateZ(0); /* Establish containing block for fixed elements */
+      }
+
+      .view-mode-container.view-mobile > div {
+        height: 100%;
+        overflow-y: auto;
+         /* Custom scrollbar for the mobile view */
+        scrollbar-width: thin;
+        scrollbar-color: #9ca3af #f3f4f6;
+      }
+      
+      .dark .view-mode-container.view-mobile > div {
+         scrollbar-color: #4b5563 #030712;
+      }
+
+      .view-mode-container.view-mobile > div::-webkit-scrollbar {
+          width: 5px;
+      }
+      .view-mode-container.view-mobile > div::-webkit-scrollbar-track {
+          background: #f3f4f6; /* bg-gray-100 */
+      }
+      .dark .view-mode-container.view-mobile > div::-webkit-scrollbar-track {
+          background: #030712; /* bg-gray-950 */
+      }
+      .view-mode-container.view-mobile > div::-webkit-scrollbar-thumb {
+          background-color: #9ca3af; /* gray-400 */
+          border-radius: 6px;
+      }
+       .dark .view-mode-container.view-mobile > div::-webkit-scrollbar-thumb {
+          background-color: #4b5563; /* gray-600 */
+      }
+
+      /* Seat Animation styles */
+      .glow {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, rgba(34, 211, 238, 0.6), transparent 70%);
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #fde047; /* gold/yellow */
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+      }
+
+      /* ---- Global Animations ---- */
+      @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes slide-in-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes slide-in-down { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes golden-pulse {
+        0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.5); }
+        70% { box-shadow: 0 0 15px 8px rgba(251, 191, 36, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+      }
+      @keyframes countdown-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 8px rgba(220, 38, 38, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 16px rgba(220, 38, 38, 0.7); }
+            100% { transform: scale(1); box-shadow: 0 0 8px rgba(220, 38, 38, 0.4); }
+      }
+      
+      .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+      .animate-fade-in-fast { animation: fade-in 0.2s ease-out forwards; }
+      .animate-fade-in-page { animation: fade-in 0.4s ease-out forwards; }
+
+      .animate-slide-in-up { animation: slide-in-up 0.5s ease-out forwards; }
+      .animate-slide-in-down { animation: slide-in-down 0.3s ease-out forwards; }
+      .animate-slide-in-down-fast { animation: slide-in-down 0.2s ease-out forwards; }
+      .animate-slide-in-up-modal { animation: slide-in-up 0.3s ease-out forwards; }
+      .animate-slide-in-up-fast { animation: slide-in-up 0.3s ease-out forwards; }
+
+      .upgraded-ticket-glow {
+        border: 1px solid #FBBF24;
+        animation: golden-pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      #countdown .pulse {
+        animation: countdown-pulse 1s infinite;
+      }
+      
+       .time-box {
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 60px;
+        }
+        .time-box span {
+            font-size: 24px;
+            font-weight: bold;
+            display: block;
+            color: #06b6d4; /* cyan-500 */
+            line-height: 1.2;
+        }
+        .time-box label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #cbd5e1; /* slate-300 */
+        }
+
+    </style>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

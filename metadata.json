@@ -1,0 +1,7 @@
+{
+  "name": "Cine Priyulu - Movie Ticket Booking",
+  "description": "Welcome to Cine Priyulu (Movie Lovers)! Your ultimate destination for browsing movies and booking tickets with a modern, sleek interface. Authenticate, select your showtime, and reserve your spot on our interactive seating map. Find all your tickets on the 'My Tickets' page.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
